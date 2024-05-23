@@ -1,24 +1,30 @@
 const itemForm =document.getElementById('item-form');
 const itemInput =document.getElementById('item-input');
-const itemlist =document.getElementById('item-list');
+const itemList =document.getElementById('item-list');
+const clearBtn =document.getElementById('clear');
+const itemFilter =document.getElementById('filter');
+
+function addItem(e) {
+    
+        e.preventDefault();
+        const newItem = itemInput.value;
+    
+        if(newItem === ''){
+            alert('Vui lòng nhập item');
+            return;
+        }
+        const li = document.createElement('li');
+        li.appendChild(document.createTextNode(newItem));
+        const button = createButton('remove-item btn-link text-red');
+        li.appendChild(button);
+        console.log(li);
+        itemList.appendChild(li);
+        checkUI();
+        itemInput.value='';
+    
+}
 
 
-itemForm.addEventListener('submit',(e)=>{
-    e.preventDefault();
-    const newItem = itemInput.value;
-
-    if(newItem === ''){
-        alert('Vui lòng nhập item');
-        return;
-    }
-    const li = document.createElement('li');
-    li.appendChild(document.createTextNode(newItem));
-    const button = createButton('remove-item btn-link text-red');
-    li.appendChild(button);
-    console.log(li);
-    itemlist.appendChild(li);
-    itemInput.value='';
-});
 function createButton(classes){
     const button = document.createElement('button');
     button.className = classes;
@@ -32,4 +38,39 @@ function createIcon(classes) {
     return icon;
 
 }
-console.log(itemForm);
+function removeItem(e){
+    if(e.target.parentElement.classList.contains('remove-item')){
+       if(confirm('Are you sure')){
+        e.target.parentElement.parentElement.remove();
+       }
+    }
+    checkUI();
+}
+
+function clearItems(){
+    // itemList.innerHTML = '';
+    while(itemList.firstChild){
+        itemList.removeChild(itemList.firstChild);
+        checkUI();
+    }
+}
+
+function checkUI(){
+    const items = itemList.querySelectorAll('li');
+    console.log(items.length);
+    if(items.length === 0){
+        clearBtn.style.display = 'none';
+        itemFilter.style.display = 'none';
+    }
+   else{
+        clearBtn.style.display = 'block';
+        itemFilter.style.display = 'block';
+    }
+
+}
+
+itemForm.addEventListener('submit',addItem);
+itemList.addEventListener('click',removeItem);
+clearBtn.addEventListener('click',clearItems);
+
+checkUI();
